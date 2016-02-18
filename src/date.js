@@ -23,16 +23,16 @@ if (typeof module !== 'undefined' && typeof exports !== 'undefined' && module.ex
         dateToString: dateToString
       };
 
-      function dateToString(dateFormat, value) {
-        dateFormat = dateFormat || uiDateFormatConfig;
-        if (value) {
-          if (dateFormat) {
-            try {
-              return jQuery.datepicker.formatDate(dateFormat, value);
-            } catch (formatException) {
-              return undefined;
-            }
+    function dateToString(uiDateFormat, value) {
+      var dateFormat = uiDateFormat || uiDateFormatConfig;
+      if (value) {
+        if (dateFormat) {
+          try {
+            return jQuery.datepicker.formatDate(dateFormat, value);
+          } catch (formatException) {
+            return undefined;
           }
+        }
 
           if (value.toISOString) {
             return value.toISOString();
@@ -137,9 +137,11 @@ if (typeof module !== 'undefined' && typeof exports !== 'undefined' && module.ex
                 }
               });
 
-              controller.$validators.uiDateValidator = function uiDateValidator(modelValue, viewValue) {
-                return angular.isDate(uiDateConverter.stringToDate(attrs.uiDateFormat, viewValue));
-              };
+            controller.$validators.uiDateValidator = function uiDateValidator(modelValue, viewValue) {
+              return   viewValue === null
+                    || viewValue === ''
+                    || angular.isDate(uiDateConverter.stringToDate(attrs.uiDateFormat, viewValue));
+            };
 
               controller.$parsers.push(function uiDateParser(valueToParse) {
                 return uiDateConverter.stringToDate(attrs.uiDateFormat, valueToParse);
